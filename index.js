@@ -20,7 +20,7 @@ DATABASE();
 //Routes
 app.get("/", async (req, res) => {
   res.send({
-    message: `Server is running on ${port}`,
+    message: `Server is running on port: ${port}`,
   });
 });
 
