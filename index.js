@@ -26,6 +26,8 @@ app.get("/", async (req, res) => {
 
 app.use("/api/patients", patientRoute);
 
-app.listen(4000, () => {
-  console.log(`Server is running on ${port}`);
-});
+// app.listen(4000, () => {
+//   console.log(`Server is running on ${port}`);
+// });
+
+export default app;
