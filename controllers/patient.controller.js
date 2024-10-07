@@ -61,13 +61,6 @@ const getEvaluation = async (req, res) => {
 const updateEvaluation = async (req, res) => {
   const id = req.params.id;
   const info = req.body;
-  const { attempt } = info;
-  if (attempt.length > 10) {
-    return res.send({
-      success: false,
-      message: "Limite de avaliações atingido.",
-    });
-  }
 
   try {
     const results = await Evaluation.findByIdAndUpdate(id, info, { new: true });
