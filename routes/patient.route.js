@@ -1,36 +1,29 @@
 import express from "express";
 const router = express.Router();
+import { middleware } from "../middlewares/auth.js";
 import {
-  createPatients,
-  getPatients,
-  getPatient,
-  updatePatient,
-  deletePatient,
-  createEvaluation,
-  getEvaluations,
-  getEvaluation,
-  updateEvaluation,
-  deleteEvaluation,
+  cadastrarPaciente,
+  listarPacientes,
+  listarPaciente,
+  atualizarPaciente,
+  excluirPaciente,
 } from "../controllers/patient.controller.js";
 
-//Rotas que recebem parametros devem sempre ficar ao final
+//middleware
+router.use(middleware);
 
+//Rotas que recebem parametros devem sempre ficar ao final
 //Get
-router.get("/evaluation", getEvaluations);
-router.get("/", getPatients);
-router.get("/:id", getPatient);
-router.get("/evaluation/:id", getEvaluation);
+router.get("/", listarPacientes);
+router.get("/:id", listarPaciente);
 
 //Post
-router.post("/", createPatients);
-router.post("/evaluation", createEvaluation);
+router.post("/", cadastrarPaciente);
 
 //Patch
-router.patch("/:id", updatePatient);
-router.patch("/evaluation/:id", updateEvaluation);
+router.patch("/:id", atualizarPaciente);
 
 //Delete
-router.delete("/:id", deletePatient);
-router.delete("/evaluation/:id", deleteEvaluation);
+router.delete("/:id", excluirPaciente);
 
 export default router;

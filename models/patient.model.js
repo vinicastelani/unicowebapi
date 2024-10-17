@@ -1,11 +1,15 @@
 import mongoose, { model, Schema } from "mongoose";
 
 const patientSchema = new Schema({
-  name: { type: String, required: true },
-  evaluations: [
+  nome: { type: String, required: true },
+  dtNascimento: { type: Date },
+  dtAvaliacao: { type: Date },
+  protocolos: { type: Array },
+  imagem: { type: String },
+  programas: [
     {
       type: Schema.Types.ObjectId,
-      ref: "Evaluation",
+      ref: "Program",
       default: [],
     },
   ],

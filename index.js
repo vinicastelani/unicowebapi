@@ -3,13 +3,18 @@ import DATABASE from "./database/db.js";
 import dotenv from "dotenv";
 import CORS from "cors";
 import patientRoute from "./routes/patient.route.js";
+import userRoute from "./routes/user.route.js";
+import programRoute from "./routes/program.route.js";
+import bodyParser from "body-parser";
+// import { middleware } from "./controllers/project.controller.js";
 dotenv.config();
 
 const app = express();
 const port = process.env.port || 4000;
 
 //middleware
-app.use(express.json());
+app.use(bodyParser.json({ limit: "50mb" }));
+app.use(bodyParser.urlencoded({ limit: "50mb", extended: true }));
 
 //CORS
 app.use(CORS());
@@ -25,9 +30,11 @@ app.get("/", async (req, res) => {
 });
 
 app.use("/api/patients", patientRoute);
+app.use("/api/user", userRoute);
+app.use("/api/exams", programRoute);
 
-// app.listen(4000, () => {
-//   console.log(`Server is running on ${port}`);
-// });
+app.listen(4000, () => {
+  console.log(`Server is running on http://localhost:${port}`);
+});
 
 export default app;
