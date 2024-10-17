@@ -21,5 +21,23 @@ const createProgram = async (req, res) => {
     });
   }
 };
+const updateProgram = async (req, res) => {
+  const id = req.params.id;
+  const info = req.body;
+  try {
+    const results = await Program.findByIdAndUpdate(id, info, { new: true });
+    res.send({
+      success: true,
+      message: "Registro atualizado.",
+      data: results,
+    });
+  } catch (error) {
+    res.send({
+      success: false,
+      message: "Erro.",
+      error: error,
+    });
+  }
+};
 
-export { createProgram };
+export { createProgram, updateProgram };

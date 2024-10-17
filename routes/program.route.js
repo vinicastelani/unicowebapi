@@ -1,9 +1,15 @@
 import express from "express";
 const router = express.Router();
 
-import { createProgram } from "../controllers/program.controller.js";
+import {
+  createProgram,
+  updateProgram,
+} from "../controllers/program.controller.js";
 
 //Post
 router.post("/", createProgram);
+
+//Patch
+router.patch("/:id", updateProgram);
 
 export default router;
