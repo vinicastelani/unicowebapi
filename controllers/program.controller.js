@@ -40,4 +40,19 @@ const updateProgram = async (req, res) => {
   }
 };
 
-export { createProgram, updateProgram };
+const deleteProgram = async (req, res) => {
+  try {
+    await Program.findByIdAndDelete(req.params.id);
+    res.send({
+      success: true,
+      message: "Registro removido.",
+    });
+  } catch (error) {
+    res.send({
+      success: false,
+      message: "Erro.",
+      error: error,
+    });
+  }
+};
+export { createProgram, updateProgram, deleteProgram };
