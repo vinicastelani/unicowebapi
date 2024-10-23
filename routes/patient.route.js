@@ -8,6 +8,7 @@ import {
   atualizarPaciente,
   excluirPaciente,
   upload,
+  deleteObject,
 } from "../controllers/patient.controller.js";
 
 //middleware
@@ -25,6 +26,7 @@ router.post("/upload", upload);
 
 //Patch
 router.patch("/:id", atualizarPaciente);
+router.patch("/delete-file/:id", deleteObject);
 
 //Delete
 router.delete("/:id", excluirPaciente);

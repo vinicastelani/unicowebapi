@@ -1,5 +1,10 @@
 import { Patient } from "../models/patient.model.js";
 import AWS from "aws-sdk";
+AWS.config.update({
+  accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+  secretAccesskey: process.env.AWS_SECRET_ACCESS_KEY,
+  region: process.env.AWS_REGION,
+});
 
 const cadastrarPaciente = async (req, res) => {
   const patientInfo = req.body;
@@ -132,12 +137,6 @@ const upload = async (req, res) => {
     });
   }
 
-  AWS.config.update({
-    accessKeyId: process.env.AWS_ACCESS_KEY_ID,
-    secretAccesskey: process.env.AWS_SECRET_ACCESS_KEY,
-    region: process.env.AWS_REGION,
-  });
-
   const s3 = new AWS.S3();
 
   // Setting up S3 upload parameters
@@ -152,7 +151,7 @@ const upload = async (req, res) => {
     if (err) {
       return res.send({
         success: false,
-        message: "Erro.",
+        message: "Não foi possível realizar o upload.",
         error: err,
       });
     }
@@ -167,6 +166,36 @@ const upload = async (req, res) => {
   });
 };
 
+const deleteObject = async (req, res) => {
+  const { filename, paciente } = req.body;
+
+  const patient = await Patient.findById(paciente);
+  const s3 = new AWS.S3();
+  const params = {
+    Bucket: process.env.BUCKET_NAME,
+    Key: filename,
+  };
+
+  s3.deleteObject(params, async function (err, data) {
+    if (err) {
+      return res.send({
+        success: false,
+        message: "Não foi possível excluir o item.",
+        error: err,
+      });
+    }
+
+    const index = patient.arquivos.findIndex((f) => f.filename === filename);
+    patient.arquivos.splice(index, 1);
+    await patient.save();
+    return res.send({
+      success: true,
+      message: "Arquivo removido com sucesso.",
+      data: data,
+    });
+  });
+};
+
 export {
   cadastrarPaciente,
   listarPacientes,
@@ -174,4 +203,5 @@ export {
   atualizarPaciente,
   excluirPaciente,
   upload,
+  deleteObject,
 };
