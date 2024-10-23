@@ -7,18 +7,21 @@ import {
   listarPaciente,
   atualizarPaciente,
   excluirPaciente,
+  upload,
 } from "../controllers/patient.controller.js";
 
 //middleware
 router.use(middleware);
 
 //Rotas que recebem parametros devem sempre ficar ao final
+
 //Get
 router.get("/", listarPacientes);
 router.get("/:id", listarPaciente);
 
 //Post
 router.post("/", cadastrarPaciente);
+router.post("/upload", upload);
 
 //Patch
 router.patch("/:id", atualizarPaciente);

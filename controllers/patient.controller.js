@@ -1,4 +1,5 @@
 import { Patient } from "../models/patient.model.js";
+import AWS from "aws-sdk";
 
 const cadastrarPaciente = async (req, res) => {
   const patientInfo = req.body;
@@ -47,6 +48,7 @@ const listarPacientes = async (req, res) => {
           dtAvaliacao: p.dtAvaliacao,
           protocolos: p.protocolos,
           programas: p.programas,
+          arquivos: p.arquivos,
         };
       }),
     });
@@ -109,10 +111,67 @@ const excluirPaciente = async (req, res) => {
   }
 };
 
+const upload = async (req, res) => {
+  if (!req.files) {
+    return res.send({
+      success: false,
+      message: "Erro.",
+    });
+  }
+
+  // Binary data base64
+  const { name, data } = req.files.file;
+  const { id } = req.body;
+  const fileContent = Buffer.from(data, "binary");
+  const patient = await Patient.findById(id);
+
+  if (patient.arquivos.find((a) => a.filename === name)) {
+    return res.send({
+      success: false,
+      message: "Já existe um arquivo com este nome.",
+    });
+  }
+
+  AWS.config.update({
+    accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+    secretAccesskey: process.env.AWS_SECRET_ACCESS_KEY,
+    region: process.env.AWS_REGION,
+  });
+
+  const s3 = new AWS.S3();
+
+  // Setting up S3 upload parameters
+  const params = {
+    Bucket: process.env.BUCKET_NAME,
+    Key: name,
+    Body: fileContent,
+  };
+
+  // Uploading files to the bucket
+  s3.upload(params, async function (err, data) {
+    if (err) {
+      return res.send({
+        success: false,
+        message: "Erro.",
+        error: err,
+      });
+    }
+
+    patient.arquivos.push({ url: data.Location, filename: data.Key });
+    await patient.save();
+    return res.send({
+      success: true,
+      message: "Arquivo enviado com sucesso.",
+      data: data,
+    });
+  });
+};
+
 export {
   cadastrarPaciente,
   listarPacientes,
   listarPaciente,
   atualizarPaciente,
   excluirPaciente,
+  upload,
 };

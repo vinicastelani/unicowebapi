@@ -12,7 +12,7 @@ const createUser = async (req, res) => {
 
   try {
     if (await User.findOne({ registro }))
-      return res.status(400).send({
+      return res.status(200).send({
         success: false,
         message: "Perfil já cadastrado.",
       });
@@ -32,7 +32,7 @@ const createUser = async (req, res) => {
       data: { ...formatedUser },
     });
   } catch (error) {
-    return res.status(400).send({
+    return res.status(401).send({
       success: false,
       message: "Erro.",
       error: error,
@@ -44,13 +44,13 @@ const logIn = async (req, res) => {
 
   const user = await User.findOne({ registro }).select("+senha");
   if (!user)
-    return res.status(400).send({
+    return res.status(200).send({
       success: false,
       message: "Perfil não encontrado.",
     });
 
   if (!(await bcrypt.compare(senha, user.senha)))
-    return res.status(400).send({
+    return res.status(401).send({
       success: false,
       message: "Credênciais inválidas.",
     });

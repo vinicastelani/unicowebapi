@@ -5,6 +5,7 @@ const patientSchema = new Schema({
   dtNascimento: { type: Date },
   dtAvaliacao: { type: Date },
   protocolos: { type: Array },
+  arquivos: { type: Array },
   imagem: { type: String },
   programas: [
     {
