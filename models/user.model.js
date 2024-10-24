@@ -8,6 +8,11 @@ const userSchema = new Schema({
     required: true,
     select: false,
   },
+  permissao: {
+    type: String,
+    required: true,
+    default: "usuario",
+  },
   imagem: { type: String },
 });
 

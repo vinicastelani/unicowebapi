@@ -63,6 +63,7 @@ const logIn = async (req, res) => {
     registro,
     token: generateToken({ id: user.id }),
     imagem: user.imagem,
+    permissao: user.permissao,
   };
   return res.status(200).send({
     success: true,
@@ -89,4 +90,41 @@ const updateUser = async (req, res) => {
   }
 };
 
-export { createUser, logIn, updateUser };
+const listUsers = async (req, res) => {
+  const id = req.params.id;
+  try {
+    const results = await User.findById(id);
+    const { permissao } = results;
+    if (permissao != "admin") {
+      return res.send({
+        success: false,
+        message: "Voce não tem permissão para acessar este recurso.",
+        error: error,
+      });
+    }
+  } catch (error) {
+    return res.send({
+      success: false,
+      message: "Não foi possível validar as credênciais para esta ação.",
+      error: error,
+    });
+  }
+
+  try {
+    const results = await User.find();
+
+    return res.send({
+      success: true,
+      message: "Lista de usuários recuperada com sucesso.",
+      data: results,
+    });
+  } catch (error) {
+    return res.send({
+      success: false,
+      message: "Ocorreu um erro ao tentar recuperar a lista de pacientes.",
+      error: error,
+    });
+  }
+};
+
+export { createUser, logIn, updateUser, listUsers };
